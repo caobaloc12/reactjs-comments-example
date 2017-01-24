@@ -1,0 +1,54 @@
+.comment-box {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid  #eee;
+  margin: 15px auto;
+  padding: 10px; }
+  .comment-box .actions ul {
+    min-width: 140px;
+    padding: 10px;
+    left: auto;
+    right: 0; }
+    .comment-box .actions ul button {
+      margin: 0; }
+      .comment-box .actions ul button:last-child {
+        float: right;
+        margin-left: 10px; }
+      .comment-box .actions ul button span {
+        margin-left: 4px; }
+  .comment-box .actions button {
+    margin: 0 5px;
+    min-width: 45px; }
+  .comment-box.addnew-comment {
+    align-items: flex-start; }
+    .comment-box.addnew-comment textarea {
+      min-height: 40px;
+      flex: 1;
+      margin-right: 10px; }
+    .comment-box.addnew-comment button {
+      min-width: 60px;
+      margin: 3px 5px; }
+
+.form-wrap {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid  #eee;
+  margin: 15px auto;
+  padding: 10px; }
+  .form-wrap textarea {
+    flex: 1; }
+  .form-wrap button {
+    margin: 5px; }
+
+.modal .modal-header {
+  border-bottom: none !important;
+  padding: 10px !important; }
+
+.modal .modal-footer {
+  padding: 10px !important; }

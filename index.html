@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Comment Example</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="src/js/jquery-2.2.4.js" charset="utf-8"></script>
+    <script src="src/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="src/js/react.min.js" charset="utf-8"></script>
+    <script src="src/js/react-dom.min.js" charset="utf-8"></script>
+    <script src="src/js/browser.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/babel">
+      var comments = [
+        "Parte fulgura totidem proxima ante ora cinxit.",
+        "Secuit sine evolvit agitabilis madescit nebulas.",
+        "Cura tegi militis titan deorum dedit regio boreas."
+      ];
+      var MenuCollapse = React.createClass({
+        getInitialState: function () {
+          return {
+            menus: []
+          }
+        },
+        render: function () {
+          return (
+            <ul className="nav navbar-nav pull-right">
+              {
+                this.state.menus.map(function (text, i) {
+                  return(
+                    <li><a href="">{text}</a></li>
+                  )
+                })
+              }
+            </ul>
+          )
+        }
+      });
+      var Navbar = React.createClass({
+        render: function () {
+          return (
+            <div>
+              <nav className="navbar navbar-default">
+                <div className="container">
+                  <div className="navbar-header">
+                  <a href="/" className="navbar-brand">Demo</a>
+                  </div>
+                  <div className="collapse navbar-collapse">
+                    <MenuCollapse />
+                  </div>
+                </div>
+              </nav>
+            </div>
+          )
+        }
+      });
+      var ConfirmModal = React.createClass({
+        getInitialState: function () {
+          return { isRemove: false }
+        },
+        confirm: function () {
+          this.setState({isRemove: true});
+        },
+        render: function () {
+          return(
+            <div id="confirmModal" className="modal fade" tabindex="-1" role="dialog" aria-labeledby="myModalLabel">
+              <div className="modal-dialog modal-sm">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p>Remove comment?</p>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-default btn-xs" data-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-danger btn-xs" onClick={this.confirm}>Remove</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      })
+      var AddCommentBox = React.createClass({
+        getInitialState: function functionName() {
+          return {valid: false}
+        },
+        onChange: function (e) {
+          if (e.target.value) {
+            this.setState({valid: true});
+          }else {
+            this.setState({valid: false}) ;
+          }
+        },
+        add: function () {
+          if (this.state.valid) {
+            this.props.newComment(this.refs.text.value);
+            this.refs.text.value = '';
+            this.setState({valid: false}) ;
+          }else{
+            console.log("Please type sometext");
+          }
+        },
+        render: function () {
+          return (
+            <div className="comment-box addnew-comment">
+              <textarea ref="text" required placeholder="Add new comment" onChange={this.onChange}></textarea>
+              <button className="btn btn-info btn-sm" onClick={this.add} disabled={!this.state.valid}>Add</button>
+            </div>
+          );
+        }
+      })
+      var CommentBox = React.createClass({
+        getInitialState: function () {
+          return {editing: false}
+        },
+        edit: function () {
+          this.setState({editing: true});
+        },
+        remove: function () {
+          if (confirm("Are you sure?")) {
+            this.props.removeComment(this.props.index);
+          }
+        },
+        save: function () {
+          this.props.updateComment(this.refs.newText.value, this.props.index);
+          this.setState({editing: false});
+        },
+        cancel: function () {
+          this.setState({editing: false});
+        },
+        renderNormal: function () {
+          return (
+            <div className="comment-box">
+              <div className="text" onDoubleClick={this.edit}>{this.props.children}</div>
+              <div className="btn-group actions">
+                <button className="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Actions
+                  <span className="caret"></span>
+                </button>
+                <ul className="dropdown-menu" arial-labeledby="dropdownAction">
+                  <button className="btn btn-sm btn-default btn-xs" onClick={this.edit}>Edit</button>
+                  <button className="btn btn-sm btn-danger btn-xs" onClick={this.remove} >Remove</button>
+                </ul>
+              </div>
+            </div>
+          )
+        },
+        renderForm: function () {
+          return(
+            <div className="form-wrap">
+              <textarea ref="newText" defaultValue={this.props.children}></textarea>
+              <button className="btn btn-sm btn-success" onClick={this.save}>Save</button>
+              <button className="btn btn-sm btn-default" onClick={this.cancel}>Cancel</button>
+            </div>
+          )
+        },
+        render: function () {
+          if (this.state.editing) {
+            return this.renderForm();
+          }else {
+            return this.renderNormal();
+          }
+        }
+      });
+      var CommentList = React.createClass({
+        getInitialState: function () {
+          return {
+            comments: comments
+          }
+        },
+        addNew: function (text) {
+          var arr = this.state.comments;
+          arr.push(text);
+          this.setState({comments: arr});
+        },
+        updateComment: function (newText, i) {
+          var arr = this.state.comments;
+          arr[i] = newText;
+          this.setState({comments: arr});
+        },
+        removeComment: function (i) {
+          var arr = this.state.comments;
+          arr.splice(i,1);
+          this.setState({comments: arr});
+        },
+        eachComment: function (item, i) {
+          return(
+            <CommentBox key={i} index={i} updateComment={this.updateComment} removeComment={this.removeComment}>{item}</CommentBox>
+          )
+        },
+        render: function () {
+            return(
+              <div className="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 comments">
+                <AddCommentBox newComment={this.addNew}/>
+                <div className="comment-inner">
+                  {this.state.comments.map(this.eachComment)}
+                </div>
+              </div>
+            )
+        }
+      });
+      ReactDOM.render(
+        <div>
+          <Navbar />
+          <CommentList />
+        </div>
+        , document.getElementById("container")
+      );
+    </script>
+  </body>
+</html>
